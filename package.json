@@ -1,0 +1,12 @@
+{
+    "name": "roon-alarm-clock",
+    "version": "1.0.0",
+    "description": "Roon alarm clock",
+    "main": "app.js",
+    "author": "Aria Golliver",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "node-roon-api": "github:roonlabs/node-roon-api",
+        "node-roon-api-status": "github:roonlabs/node-roon-api-status"
+    }
+}
