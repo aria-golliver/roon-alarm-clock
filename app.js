@@ -13,8 +13,8 @@ AlarmZones = {
     },
 }
 
-var AlarmZone = AlarmZones.KefQ150
-var AlarmVolumeRange = [0, 5] // alarm start volume, alarm end volume
+var AlarmZone = AlarmZones.AriaEvoX
+var AlarmVolumeRange = [0, 20] // alarm start volume, alarm end volume
 var transport;
 var roon = new RoonApi({
     extension_id: 'com.frociaggine.alarm-clock',
@@ -26,22 +26,26 @@ var roon = new RoonApi({
 
     core_paired: function (core) {
         transport = core.services.RoonApiTransport;
-        transport.subscribe_zones(function (cmd, data) {
-            // console.log(core.core_id,
-            //     core.display_name,
-            //     core.display_version,
-            //     "-",
-            //     cmd,
-            //     JSON.stringify(data, null, '  '));
+        transport.subscribe_zones(function (response, msg) {
+            if (response == "Subscribed") {
+                let zones = msg.zones.map(zone => {
+                    var outputs = zone['outputs'].map(output => {
+                        return output['output_id']
+                    })
+                    return {
+                        name: zone['display_name'],
+                        id: zone['zone_id'],
+                        outputs: outputs,
+                    }
+                });
+                console.log("subscribed", zones)
+            }
         });
     },
 
     core_unpaired: function (core) {
-        // console.log(core.core_id,
-        //     core.display_name,
-        //     core.display_version,
-        //     "-",
-        //     "LOST");
+        console.log("Unpaired from roon, quitting...")
+        process.exit(1)
     }
 });
 
@@ -56,19 +60,30 @@ svc_status.set_status("👍 all good 👍", false);
 
 roon.start_discovery();
 
-function reset_volume() {
-    console.log("resetting volume to", AlarmVolumeRange)
-    transport.change_volume(AlarmZone.OutputId, 'absolute', AlarmVolumeRange[1], start_alarm)
+function switch_on() {
+    console.log("switching on")
+    transport.convenience_switch(AlarmZone.OutputId, {}, reset_volume)
 }
 
-function start_alarm() {
-    console.log("starting alarm")
-    transport.control(AlarmZone.Id, 'play')
+function reset_volume() {
+    console.log("resetting volume to", AlarmVolumeRange)
+    transport.change_volume(AlarmZone.OutputId, 'absolute', AlarmVolumeRange[1], play_song)
+}
+
+function play_song() {
+    console.log("playing song")
+    transport.control(AlarmZone.Id, 'play', enable_radio)
 }
 
 function enable_radio() {
     console.log("enabling radio")
-    transport.change_settings(AlarmZone.Id, { auto_radio: true }, reset_volume)
+    transport.change_settings(AlarmZone.Id, { auto_radio: true }, quit_app)
 }
 
-setTimeout(enable_radio, 2000)
+function quit_app() {
+    process.exit(0)
+}
+
+var start_alarm = switch_on;
+
+setTimeout(start_alarm, 5000)
