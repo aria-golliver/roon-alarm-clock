@@ -73,12 +73,7 @@ function reset_volume() {
 
 function play_song() {
     console.log("playing song")
-    transport.control(AlarmZone.Id, 'play', enable_radio)
-}
-
-function enable_radio() {
-    console.log("enabling radio")
-    transport.change_settings(AlarmZone.Id, { auto_radio: true }, quit_app)
+    transport.control(AlarmZone.Id, 'play', quit_app)
 }
 
 function quit_app() {
