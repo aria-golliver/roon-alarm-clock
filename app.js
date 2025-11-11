@@ -6,7 +6,7 @@ AlarmZones = {
     KefQ150: {
         Id: '160159f398ff576aff46bb2dedfdff98f359',
         OutputId: '170159f398ff576aff46bb2dedfdff98f359',
-        MaxVolume: 5,
+        MaxVolume: 0,
     },
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
