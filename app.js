@@ -1,6 +1,7 @@
 var RoonApi = require("node-roon-api");
 var RoonApiStatus = require("node-roon-api-status");
 var RoonApiTransport = require("node-roon-api-transport");
+var RoonApiBrowse = require("node-roon-api-browse");
 
 AlarmZones = {
     KefQ150: {
@@ -18,6 +19,30 @@ AlarmZones = {
 var AlarmZone = AlarmZones.KefQ150
 // TODO: sweep volume up to wake up gently?
 var transport;
+
+function switch_on() {
+    console.log("switching on")
+    transport.convenience_switch(AlarmZone.OutputId, {}, reset_volume)
+}
+
+function reset_volume() {
+    let volume = AlarmZone.MaxVolume
+    console.log("resetting volume to", volume)
+    transport.change_volume(AlarmZone.OutputId, 'absolute', volume, play_song)
+}
+
+function play_song() {
+    console.log("playing song")
+    transport.control(AlarmZone.Id, 'play', finalize_alarm)
+}
+
+function finalize_alarm() {
+    svc_status.set_status("👍 good morning babes 👍", false);
+    // process.exit(0)
+}
+
+var start_alarm = switch_on;
+
 var roon = new RoonApi({
     extension_id: 'com.frociaggine.alarm-clock',
     display_name: "Alarm Clock",
@@ -41,6 +66,7 @@ var roon = new RoonApi({
                     }
                 });
                 console.log("subscribed", zones)
+                start_alarm()
             }
         });
     },
@@ -54,35 +80,10 @@ var roon = new RoonApi({
 var svc_status = new RoonApiStatus(roon);
 
 roon.init_services({
-    required_services: [RoonApiTransport],
+    required_services: [RoonApiTransport, RoonApiBrowse],
     provided_services: [svc_status]
 });
 
 svc_status.set_status("🙏 hope you wake up 🙏", false);
 
 roon.start_discovery();
-
-function switch_on() {
-    console.log("switching on")
-    transport.convenience_switch(AlarmZone.OutputId, {}, reset_volume)
-}
-
-function reset_volume() {
-    let volume = AlarmZone.MaxVolume
-    console.log("resetting volume to", volume)
-    transport.change_volume(AlarmZone.OutputId, 'absolute', volume, play_song)
-}
-
-function play_song() {
-    console.log("playing song")
-    transport.control(AlarmZone.Id, 'finalize_alarm', finalize_alarm)
-}
-
-function finalize_alarm() {
-    svc_status.set_status("👍 good morning babes 👍", false);
-    // process.exit(0)
-}
-
-var start_alarm = switch_on;
-
-setTimeout(start_alarm, 5000)
