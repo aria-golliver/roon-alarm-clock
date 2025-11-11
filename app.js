@@ -57,7 +57,7 @@ roon.init_services({
     provided_services: [svc_status]
 });
 
-svc_status.set_status("👍 all good 👍", false);
+svc_status.set_status("🙏 hope you wake up 🙏", false);
 
 roon.start_discovery();
 
@@ -82,6 +82,7 @@ function enable_radio() {
 }
 
 function quit_app() {
+    svc_status.set_status("👍 good morning babes 👍", false);
     process.exit(0)
 }
 
