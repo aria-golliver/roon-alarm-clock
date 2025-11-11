@@ -75,10 +75,10 @@ function reset_volume() {
 
 function play_song() {
     console.log("playing song")
-    transport.control(AlarmZone.Id, 'play', quit_app)
+    transport.control(AlarmZone.Id, 'finalize_alarm', finalize_alarm)
 }
 
-function quit_app() {
+function finalize_alarm() {
     svc_status.set_status("👍 good morning babes 👍", false);
     process.exit(0)
 }
