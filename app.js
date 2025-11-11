@@ -6,16 +6,17 @@ AlarmZones = {
     KefQ150: {
         Id: '160159f398ff576aff46bb2dedfdff98f359',
         OutputId: '170159f398ff576aff46bb2dedfdff98f359',
+        MaxVolume: 5,
     },
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
         OutputId: '1701f42f1178d925f9f368be5fb3ebb294e1',
+        MaxVolume: 35,
     },
 }
 
-var AlarmZone = AlarmZones.AriaEvoX
+var AlarmZone = AlarmZones.KefQ150
 // TODO: sweep volume up to wake up gently?
-var AlarmVolumeRange = [0, 35] // alarm start volume, alarm end volume
 var transport;
 var roon = new RoonApi({
     extension_id: 'com.frociaggine.alarm-clock',
@@ -67,8 +68,9 @@ function switch_on() {
 }
 
 function reset_volume() {
-    console.log("resetting volume to", AlarmVolumeRange)
-    transport.change_volume(AlarmZone.OutputId, 'absolute', AlarmVolumeRange[1], play_song)
+    let volume = AlarmZone.MaxVolume
+    console.log("resetting volume to", volume)
+    transport.change_volume(AlarmZone.OutputId, 'absolute', volume, play_song)
 }
 
 function play_song() {
