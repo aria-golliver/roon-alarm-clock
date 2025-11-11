@@ -14,6 +14,7 @@ AlarmZones = {
 }
 
 var AlarmZone = AlarmZones.AriaEvoX
+// TODO: sweep volume up to wake up gently?
 var AlarmVolumeRange = [0, 50] // alarm start volume, alarm end volume
 var transport;
 var roon = new RoonApi({
