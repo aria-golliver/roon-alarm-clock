@@ -1,7 +1,6 @@
 var RoonApi = require("node-roon-api");
 var RoonApiStatus = require("node-roon-api-status");
 var RoonApiTransport = require("node-roon-api-transport");
-var RoonApiBrowse = require("node-roon-api-browse");
 
 AlarmZones = {
     KefQ150: {
@@ -80,7 +79,7 @@ var roon = new RoonApi({
 var svc_status = new RoonApiStatus(roon);
 
 roon.init_services({
-    required_services: [RoonApiTransport, RoonApiBrowse],
+    required_services: [RoonApiTransport],
     provided_services: [svc_status]
 });
 
