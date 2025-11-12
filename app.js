@@ -16,7 +16,7 @@ AlarmZones = {
     },
 }
 
-var AlarmZone = AlarmZones.KefQ150
+var AlarmZone = AlarmZones.AriaEvoX
 // TODO: sweep volume up to wake up gently?
 var transport;
 
@@ -38,7 +38,7 @@ function play_song() {
 
 function finalize_alarm() {
     svc_status.set_status("👍 good morning babes 👍", false);
-    // process.exit(0)
+    process.exit(0)
 }
 
 var start_alarm = switch_on;
