@@ -1,6 +1,6 @@
-var RoonApi = require("node-roon-api");
-var RoonApiStatus = require("node-roon-api-status");
-var RoonApiTransport = require("node-roon-api-transport");
+var RoonApi = require("node-roon-api")
+var RoonApiStatus = require("node-roon-api-status")
+var RoonApiTransport = require("node-roon-api-transport")
 
 AlarmZones = {
     KefQ150: {
