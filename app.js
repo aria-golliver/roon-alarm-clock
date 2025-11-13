@@ -15,7 +15,7 @@ AlarmZones = {
     },
 }
 var IS_PROD = !!process.env.WAKE_ME_UP
-var AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : KefQ150
+var AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.KefQ150
 // TODO: sweep volume up to wake up gently?
 var transport;
 
