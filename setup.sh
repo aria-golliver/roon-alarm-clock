@@ -50,7 +50,7 @@ echo ""
 echo "please add the following line to your crontab, to eg, wake up at 7:30 am every MON-FRI"
 echo "    (run 'crontab -e' to edit)"
 echo ""
-echo '30 7 * * MON-FRI (. "/home/roon/.nvm/nvm.sh"; cd "/home/roon/roon-alarm-clock"; node . 1>>/home/roon/log.txt) 2>&1 | logger -t roon-alarm-clock'
 echo "SHELL=/bin/bash"
+echo '30 7 * * MON-FRI (. "/home/roon/.nvm/nvm.sh"; cd "/home/roon/roon-alarm-clock"; WAKE_ME_UP=1 node . 1>>/home/roon/log.txt) 2>&1 | logger -t roon-alarm-clock'
 echo ""
 echo "and have to good morning :)"

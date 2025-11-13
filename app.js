@@ -14,8 +14,8 @@ AlarmZones = {
         MaxVolume: 35,
     },
 }
-
-var AlarmZone = AlarmZones.AriaEvoX
+var IS_PROD = !!process.env.WAKE_ME_UP
+var AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : KefQ150
 // TODO: sweep volume up to wake up gently?
 var transport;
 
@@ -25,7 +25,8 @@ function switch_on() {
 }
 
 function reset_volume() {
-    let volume = AlarmZone.MaxVolume
+    // only set the volume up high if we're running in the cron job :)
+    let volume = IS_PROD ? AlarmZone.MaxVolume : 0
     console.log("resetting volume to", volume)
     transport.change_volume(AlarmZone.OutputId, 'absolute', volume, play_song)
 }
