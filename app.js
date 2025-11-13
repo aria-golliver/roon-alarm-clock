@@ -11,7 +11,7 @@ AlarmZones = {
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
         OutputId: '1701f42f1178d925f9f368be5fb3ebb294e1',
-        MaxVolume: 35,
+        MaxVolume: 40,
     },
 }
 var IS_PROD = !!process.env.WAKE_ME_UP
