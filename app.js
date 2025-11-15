@@ -2,15 +2,27 @@ var RoonApi = require("node-roon-api")
 var RoonApiStatus = require("node-roon-api-status")
 var RoonApiTransport = require("node-roon-api-transport")
 
+// to configure this script just run it once. All the zones and outputs will
+// be logged to the console before crashing
 AlarmZones = {
+    AriaEvoX: {
+        Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
+        OutputId: '1701f42f1178d925f9f368be5fb3ebb294e1',
+        MaxVolume: 40,
+    },
     KefQ150: {
         Id: '160159f398ff576aff46bb2dedfdff98f359',
         OutputId: '170159f398ff576aff46bb2dedfdff98f359',
         MaxVolume: 5,
     },
-    AriaEvoX: {
-        Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
-        OutputId: '1701f42f1178d925f9f368be5fb3ebb294e1',
+    KefReference1: {
+        Id: '16019cf098ffdc43849e1ec09055ff98f09c',
+        OutputId: '17019cf098ffdc43849e1ec09055ff98f09c',
+        MaxVolume: 40, // meaningless I think? Controlled by the C49
+    },
+    PolkR200: {
+        Id: '160159f398ff16ce633ecfbf6a86ff98f359',
+        OutputId: '170159f398ff16ce633ecfbf6a86ff98f359',
         MaxVolume: 40,
     },
 }
