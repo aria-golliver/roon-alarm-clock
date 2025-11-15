@@ -1,35 +1,39 @@
 async function start_alarm() {
-    await convenience_switch(AlarmZone.OutputId);
-    await change_volume(AlarmZone.OutputId, 'absolute', 0);
-    await control(AlarmZone.Id, 'play');
+    await convenience_switch(AlarmZone.Outputs)
+    await change_volume(AlarmZone.Outputs, 'absolute', 0)
+    await control(AlarmZone.Id, 'play')
     for (let i = 0; i <= AlarmZone.MaxVolume; i++) {
         let min_time_between_steps = timer(0.5)
-        let increase_volume = change_volume(AlarmZone.OutputId, 'absolute', i);
+        let increase_volume = change_volume(AlarmZone.Outputs, 'absolute', i)
         await Promise.all([increase_volume, min_time_between_steps])
     }
 }
 
 // to configure this script just run it once. All the zones and outputs will
 // be logged to the console before crashing
+//
+// this technically supports multiple outputs in each zone
+// but I don't have any of those at home, so idk what that means
+// or if it works...
 AlarmZones = {
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
-        OutputId: '1701f42f1178d925f9f368be5fb3ebb294e1',
+        Outputs: ['1701f42f1178d925f9f368be5fb3ebb294e1'],
         MaxVolume: 40,
     },
     KefQ150: {
         Id: '160159f398ff576aff46bb2dedfdff98f359',
-        OutputId: '170159f398ff576aff46bb2dedfdff98f359',
+        Outputs: ['170159f398ff576aff46bb2dedfdff98f359'],
         MaxVolume: 5,
     },
     KefReference1: {
         Id: '16019cf098ffdc43849e1ec09055ff98f09c',
-        OutputId: '17019cf098ffdc43849e1ec09055ff98f09c',
+        Outputs: ['17019cf098ffdc43849e1ec09055ff98f09c'],
         MaxVolume: 40, // meaningless I think? Controlled by the C49
     },
     PolkR200: {
         Id: '160159f398ff16ce633ecfbf6a86ff98f359',
-        OutputId: '170159f398ff16ce633ecfbf6a86ff98f359',
+        Outputs: ['170159f398ff16ce633ecfbf6a86ff98f359'],
         MaxVolume: 40,
     },
 }
@@ -95,20 +99,24 @@ roon.start_discovery();
 //#region async wrappers
 // wrap all the roon api functions in to an async/await thingy
 
-function convenience_switch(output, opts) {
-    return new Promise((resolve) => {
-        transport.convenience_switch(output, opts, (err) => {
-            resolve(err)
+function convenience_switch(outputs, opts) {
+    return Promise.all(outputs.map((output) => {
+        return new Promise((resolve) => {
+            transport.convenience_switch(output, opts, (err) => {
+                resolve(err)
+            })
         })
-    });
+    }))
 }
 
-function change_volume(output, how, value) {
-    return new Promise((resolve) => {
-        transport.change_volume(output, how, value, (err) => {
-            resolve(err)
+function change_volume(outputs, how, value) {
+    return Promise.all(outputs.map((output) => {
+        return new Promise((resolve) => {
+            transport.change_volume(output, how, value, (err) => {
+                resolve(err)
+            })
         })
-    });
+    }))
 }
 
 function control(zone, control) {
