@@ -1,6 +1,13 @@
-var RoonApi = require("node-roon-api")
-var RoonApiStatus = require("node-roon-api-status")
-var RoonApiTransport = require("node-roon-api-transport")
+async function start_alarm() {
+    await convenience_switch(AlarmZone.OutputId);
+    await change_volume(AlarmZone.OutputId, 'absolute', 0);
+    await control(AlarmZone.Id, 'play');
+    for (let i = 0; i <= AlarmZone.MaxVolume; i++) {
+        let min_time_between_steps = timer(0.5)
+        let increase_volume = change_volume(AlarmZone.OutputId, 'absolute', i);
+        await Promise.all([increase_volume, min_time_between_steps])
+    }
+}
 
 // to configure this script just run it once. All the zones and outputs will
 // be logged to the console before crashing
@@ -32,6 +39,10 @@ var AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.KefQ150
 
 // -----------------------------------------------------------
 //#region roon stuff
+var RoonApi = require("node-roon-api")
+var RoonApiStatus = require("node-roon-api-status")
+var RoonApiTransport = require("node-roon-api-transport")
+
 var transport;
 var roon = new RoonApi({
     extension_id: 'com.frociaggine.alarm-clock',
@@ -118,14 +129,3 @@ function timer(seconds) {
 // wrap all the roon api functions in to an async/await thingy
 //#endregion async wrappers
 // -----------------------------------------------------------
-
-async function start_alarm() {
-    await convenience_switch(AlarmZone.OutputId);
-    await change_volume(AlarmZone.OutputId, 'absolute', 0);
-    await control(AlarmZone.Id, 'play');
-    for (let i = 0; i <= AlarmZone.MaxVolume; i++) {
-        let min_time_between_steps = timer(0.5)
-        let increase_volume = change_volume(AlarmZone.OutputId, 'absolute', i);
-        await Promise.all([increase_volume, min_time_between_steps])
-    }
-}
