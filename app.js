@@ -6,7 +6,7 @@ AlarmZones = {
     KefQ150: {
         Id: '160159f398ff576aff46bb2dedfdff98f359',
         OutputId: '170159f398ff576aff46bb2dedfdff98f359',
-        MaxVolume: 0,
+        MaxVolume: 5,
     },
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
@@ -16,33 +16,10 @@ AlarmZones = {
 }
 var IS_PROD = !!process.env.WAKE_ME_UP
 var AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.KefQ150
-// TODO: sweep volume up to wake up gently?
+
+// -----------------------------------------------------------
+//#region roon stuff
 var transport;
-
-function switch_on() {
-    console.log("switching on")
-    transport.convenience_switch(AlarmZone.OutputId, {}, reset_volume)
-}
-
-function reset_volume() {
-    // only set the volume up high if we're running in the cron job :)
-    let volume = IS_PROD ? AlarmZone.MaxVolume : 0
-    console.log("resetting volume to", volume)
-    transport.change_volume(AlarmZone.OutputId, 'absolute', volume, play_song)
-}
-
-function play_song() {
-    console.log("playing song")
-    transport.control(AlarmZone.Id, 'play', finalize_alarm)
-}
-
-function finalize_alarm() {
-    svc_status.set_status("👍 good morning babes 👍", false);
-    process.exit(0)
-}
-
-var start_alarm = switch_on;
-
 var roon = new RoonApi({
     extension_id: 'com.frociaggine.alarm-clock',
     display_name: "Alarm Clock",
@@ -87,3 +64,55 @@ roon.init_services({
 svc_status.set_status("🙏 hope you wake up 🙏", false);
 
 roon.start_discovery();
+//#endregion roon stuff
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+//#region async wrappers
+// wrap all the roon api functions in to an async/await thingy
+
+function convenience_switch(output, opts) {
+    return new Promise((resolve) => {
+        transport.convenience_switch(output, opts, (err) => {
+            resolve(err)
+        })
+    });
+}
+
+function change_volume(output, how, value) {
+    return new Promise((resolve) => {
+        transport.change_volume(output, how, value, (err) => {
+            resolve(err)
+        })
+    });
+}
+
+function control(zone, control) {
+    return new Promise((resolve) => {
+        transport.control(zone, control, (err) => {
+            resolve(err)
+        })
+    });
+}
+
+function timer(seconds) {
+    return new Promise((resolve) => {
+        setTimeout(() => { resolve(true) }, seconds * 1000)
+    })
+}
+
+//
+// wrap all the roon api functions in to an async/await thingy
+//#endregion async wrappers
+// -----------------------------------------------------------
+
+async function start_alarm() {
+    await convenience_switch(AlarmZone.OutputId);
+    await change_volume(AlarmZone.OutputId, 'absolute', 0);
+    await control(AlarmZone.Id, 'play');
+    for (let i = 0; i <= AlarmZone.MaxVolume; i++) {
+        let min_time_between_steps = timer(0.5)
+        let increase_volume = change_volume(AlarmZone.OutputId, 'absolute', i);
+        await Promise.all([increase_volume, min_time_between_steps])
+    }
+}
