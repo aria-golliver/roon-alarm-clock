@@ -26,6 +26,7 @@ AlarmZones = {
         MaxVolume: 40,
     },
 }
+
 var IS_PROD = !!process.env.WAKE_ME_UP
 var AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.KefQ150
 
