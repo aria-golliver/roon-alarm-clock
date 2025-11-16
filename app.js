@@ -2,9 +2,11 @@ async function start_alarm() {
     await convenience_switch(AlarmZone.Outputs)
     await change_volume(AlarmZone.Outputs, 'absolute', 0)
     await control(AlarmZone.Id, 'play')
-    for (let i = 0; i <= AlarmZone.MaxVolume; i++) {
-        let min_time_between_steps = timer(0.5)
+    for (let i = AlarmZone.VolumeRange[0]; i <= AlarmZone.VolumeRange[1]; i++) {
+        let min_time_between_steps = timer(VolumeIncreaseDuration / (AlarmZone.VolumeRange[1] - AlarmZone.VolumeRange[0]))
+            .then(() => console.debug(`timer fired ${i}`))
         let increase_volume = change_volume(AlarmZone.Outputs, 'absolute', i)
+            .then(() => console.debug(`increase volume fired ${i}`))
         await Promise.all([increase_volume, min_time_between_steps])
     }
     process.exit()
@@ -20,36 +22,39 @@ AlarmZones = {
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
         Outputs: ['1701f42f1178d925f9f368be5fb3ebb294e1'],
-        MaxVolume: 40,
+        VolumeRange: [0, 40],
     },
     KefQ150: {
         Id: '160159f398ff576aff46bb2dedfdff98f359',
         Outputs: ['170159f398ff576aff46bb2dedfdff98f359'],
-        MaxVolume: 5,
+        VolumeRange: [0, 5],
     },
     KefReference1: {
         Id: '16019cf098ffdc43849e1ec09055ff98f09c',
         Outputs: ['17019cf098ffdc43849e1ec09055ff98f09c'],
-        MaxVolume: 40, // meaningless I think? Controlled by the C49
+        VolumeRange: [0, 40], // meaningless I think? Controlled by the C49
     },
     PolkR200: {
         Id: '160159f398ff16ce633ecfbf6a86ff98f359',
         Outputs: ['170159f398ff16ce633ecfbf6a86ff98f359'],
-        MaxVolume: 40,
+        VolumeRange: [0, 15],
     },
 }
 
-var IS_PROD = !!process.env.WAKE_ME_UP
-var AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.KefQ150
+let IS_PROD = !!process.env.WAKE_ME_UP
+let AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.PolkR200
+// how long to take to go from 0 to max volume, in seconds
+// kinda fuzzy - depending on how long it takes roon to adjust the volume of your device it might be (much) longer
+let VolumeIncreaseDuration = 30
 
 // -----------------------------------------------------------
 //#region roon stuff
-var RoonApi = require("node-roon-api")
-var RoonApiStatus = require("node-roon-api-status")
-var RoonApiTransport = require("node-roon-api-transport")
+let RoonApi = require("node-roon-api")
+let RoonApiStatus = require("node-roon-api-status")
+let RoonApiTransport = require("node-roon-api-transport")
 
 var transport;
-var roon = new RoonApi({
+let roon = new RoonApi({
     extension_id: 'com.frociaggine.alarm-clock',
     display_name: "Alarm Clock",
     display_version: "1.0.0",
@@ -62,7 +67,7 @@ var roon = new RoonApi({
         transport.subscribe_zones(function (response, msg) {
             if (response == "Subscribed") {
                 let zones = msg.zones.map(zone => {
-                    var outputs = zone['outputs'].map(output => {
+                    let outputs = zone['outputs'].map(output => {
                         return output['output_id']
                     })
                     return {
