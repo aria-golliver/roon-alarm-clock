@@ -7,6 +7,7 @@ async function start_alarm() {
         let increase_volume = change_volume(AlarmZone.Outputs, 'absolute', i)
         await Promise.all([increase_volume, min_time_between_steps])
     }
+    process.exit()
 }
 
 // to configure this script just run it once. All the zones and outputs will
