@@ -31,7 +31,7 @@ let AlarmZones = {
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
         Outputs: ['1701f42f1178d925f9f368be5fb3ebb294e1'],
-        VolumeRange: [0, 40],
+        VolumeRange: [0, 35],
     },
     KefQ150: {
         Id: '160159f398ff576aff46bb2dedfdff98f359',
