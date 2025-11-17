@@ -1,7 +1,7 @@
 async function start_alarm() {
     if (IS_PROD) {
         let random_delay = Math.random() * 20 * 60 // up to 20 minutes
-        console.log(`delaying ${Math.round(random_delay)} seconds before starting alarm`)
+        console.log(`delaying ${random_delay} seconds before starting alarm`)
         await timer(random_delay)
     }
 
@@ -23,7 +23,6 @@ async function start_alarm() {
         await change_volume(AlarmZone.Outputs, 'absolute', 0)
         await control(AlarmZone.Id, 'stop')
     }
-    process.exit()
 }
 
 // to configure this script just run it once. All the zones and outputs will
@@ -36,12 +35,12 @@ let AlarmZones = {
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
         Outputs: ['1701f42f1178d925f9f368be5fb3ebb294e1'],
-        VolumeRange: [0, 35],
+        VolumeRange: [0, 30],
     },
     KefQ150: {
         Id: '160159f398ff576aff46bb2dedfdff98f359',
         Outputs: ['170159f398ff576aff46bb2dedfdff98f359'],
-        VolumeRange: [0, 5],
+        VolumeRange: [0, 1],
     },
     KefReference1: {
         Id: '16019cf098ffdc43849e1ec09055ff98f09c',
@@ -56,7 +55,7 @@ let AlarmZones = {
 }
 
 let IS_PROD = !!process.env.WAKE_ME_UP
-let AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.AriaEvoX
+let AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.KefQ150
 
 // how long to take to go from 0 to max volume, in seconds
 // kinda fuzzy - depending on how long it takes roon to adjust the volume of your device it might be (much) longer

@@ -6,6 +6,8 @@ Important: There must be something in the play queue for it to actually work :P
 
 you can also run [./install.sh BINARY_NAME](./install.sh) to create a single binary using `bun`
 
+`tail -f /var/log/syslog | grep roon` to peep the logs
+
 [official roon api / docs here](https://github.com/RoonLabs/node-roon-api)
 
 I wrapped the roon functions I used in promises because it makes it way easier to reason about.
