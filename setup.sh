@@ -52,5 +52,5 @@ echo '    (run 'crontab -e' to edit)'
 echo ''
 echo 'SHELL=/bin/bash'
 echo '30 7 * * MON-FRI (. "/home/roon/.nvm/nvm.sh"; cd "/home/roon/roon-alarm-clock"; WAKE_ME_UP=1 node .) 2>&1 | logger -t roon-alarm-clock'
-echo ""
-echo "and have to good morning :)"
+echo ''
+echo 'and have to good morning :)'

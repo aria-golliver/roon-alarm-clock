@@ -51,7 +51,7 @@ let AlarmZones = {
 }
 
 let IS_PROD = !!process.env.WAKE_ME_UP
-let AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.PolkR200
+let AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.AriaEvoX
 
 // how long to take to go from 0 to max volume, in seconds
 // kinda fuzzy - depending on how long it takes roon to adjust the volume of your device it might be (much) longer
