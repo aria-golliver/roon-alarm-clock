@@ -2,7 +2,9 @@ A simple roon alarm clock app - all this does is hit play on a hard-coded roon z
 
 Important: There must be something in the play queue for it to actually work :P
 
-[./setup.sh](./setup.sh) will help you install everything and give an example crontab.
+[./init-repo.sh](./init-repo.sh) will help you install all the tools and give an example crontab.
+
+you can also run [./install.sh BINARY_NAME](./install.sh) to create a single binary using `bun`
 
 [official roon api / docs here](https://github.com/RoonLabs/node-roon-api)
 
