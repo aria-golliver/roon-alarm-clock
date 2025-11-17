@@ -1,5 +1,5 @@
 async function start_alarm() {
-    await convenience_switch(AlarmZone.Outputs)
+    await turn_on(AlarmZone.Outputs)
     await change_volume(AlarmZone.Outputs, 'absolute', 0)
     await control(AlarmZone.Id, 'play')
     for (let i = AlarmZone.VolumeRange[0]; i <= AlarmZone.VolumeRange[1]; i++) {
@@ -109,7 +109,7 @@ roon.start_discovery();
 //#region async wrappers
 // wrap all the roon api functions in to an async/await thingy
 
-function convenience_switch(outputs, opts) {
+function turn_on(outputs, opts) {
     return Promise.all(outputs.map((output) => {
         return new Promise((resolve) => {
             transport.convenience_switch(output, opts, (err) => {
