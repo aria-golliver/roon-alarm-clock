@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eEuo pipefail
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
@@ -13,29 +13,50 @@ function yes_or_no {
     done
 }
 
+function should_install {
+    tool_name="$1"
+
+    return command -v "$tool_name" &> /dev/null || yes_or_no "install $tool_name?"
+}
+
 NVM_VERSION="${NVM_VERSION:-0.40.3}"
 NODE_VERSION="${NODE_VERSION:-24}"
 SET_TIMEZONE="${SET_TIMEZONE:-America/Los_Angeles}"
 
-if yes_or_no "install nvm v${NVM_VERSION}?"; then
+if should_install "nvm"; then
     curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh" | bash
-    . "$HOME/.nvm/nvm.sh"
+    . "$HOME/.bashrc"
 fi
 
-if yes_or_no "install node v${NODE_VERSION}?"; then
+
+if should_install "node"; then
     nvm install 24
+fi
+
+if should_install "bun"; then
+    if should_install "unzip"; then
+        sudo apt update && sudo apt install -y unzip
+    fi
+    curl -fsSL https://bun.com/install | bash
+    . "$HOME/.bashrc"
 fi
 
 echo 'current system time:'
 timedatectl
 echo ''
 
-if yes_or_no "set timezone to ${SET_TIMEZONE}"; then
-    sudo timedatectl set-timezone "${SET_TIMEZONE}"
+if ! timedatectl | grep "Time zone: ${SET_TIMEZONE}"; then
+    if yes_or_no "set timezone to ${SET_TIMEZONE}"; then
+        sudo timedatectl set-timezone "${SET_TIMEZONE}"
+        echo 'new system time:'
+        timedatectl
+        echo ''
+    fi
 fi
 
 node -v
-npm -v 
+npm -v
+bun -v
 
 cd "$SCRIPT_DIR"
 npm install
