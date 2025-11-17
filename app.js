@@ -24,7 +24,7 @@ async function start_alarm() {
 // this technically supports multiple outputs in each zone
 // but I don't have any of those at home, so idk what that means
 // or if it works...
-AlarmZones = {
+let AlarmZones = {
     AriaEvoX: {
         Id: '1601f42f1178d925f9f368be5fb3ebb294e1',
         Outputs: ['1701f42f1178d925f9f368be5fb3ebb294e1'],
