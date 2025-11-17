@@ -1,8 +1,8 @@
 async function start_alarm() {
     await turn_on(AlarmZone.Outputs)
-    await change_volume(AlarmZone.Outputs, 'absolute', 0)
+    await change_volume(AlarmZone.Outputs, 'absolute', AlarmZone.VolumeRange[0])
     await control(AlarmZone.Id, 'play')
-    for (let i = AlarmZone.VolumeRange[0]; i <= AlarmZone.VolumeRange[1]; i++) {
+    for (let i = AlarmZone.VolumeRange[0] + 1; i <= AlarmZone.VolumeRange[1]; i++) {
         let min_time_between_steps = timer(VolumeIncreaseDuration / (AlarmZone.VolumeRange[1] - AlarmZone.VolumeRange[0]))
             .then(() => console.debug(`timer fired ${i}`))
         let increase_volume = change_volume(AlarmZone.Outputs, 'absolute', i)
