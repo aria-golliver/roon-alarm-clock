@@ -9,6 +9,10 @@ async function start_alarm() {
             .then(() => console.debug(`increase volume fired ${i}`))
         await Promise.all([increase_volume, min_time_between_steps])
     }
+    if (!IS_PROD) {
+        await change_volume(AlarmZone.Outputs, 'absolute', 0)
+        await control(AlarmZone.Id, 'stop')
+    }
     process.exit()
 }
 
@@ -45,7 +49,7 @@ let IS_PROD = !!process.env.WAKE_ME_UP
 let AlarmZone = IS_PROD ? AlarmZones.AriaEvoX : AlarmZones.PolkR200
 // how long to take to go from 0 to max volume, in seconds
 // kinda fuzzy - depending on how long it takes roon to adjust the volume of your device it might be (much) longer
-let VolumeIncreaseDuration = 30
+let VolumeIncreaseDuration = IS_PROD ? 30 : 1
 
 // -----------------------------------------------------------
 //#region roon stuff
