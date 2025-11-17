@@ -1,4 +1,7 @@
 async function start_alarm() {
+    if (IS_PROD) {
+        await timer(Math.random(20 * 60))
+    }
     await turn_on(AlarmZone.Outputs)
     await change_volume(AlarmZone.Outputs, 'absolute', AlarmZone.VolumeRange[0])
     await control(AlarmZone.Id, 'play')
