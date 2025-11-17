@@ -1,7 +1,12 @@
 async function start_alarm() {
     if (IS_PROD) {
-        await timer(Math.random() * 20 * 60) // random delay up to 20 minutes
+        let random_delay = Math.random() * 20 * 60 // up to 20 minutes
+        console.log(`delaying ${Math.round(random_delay)} seconds before starting alarm`)
+        await timer(random_delay)
     }
+
+    svc_status.set_status("⏰ WAKE UP ⏰", false);
+
     await turn_on(AlarmZone.Outputs)
     await change_volume(AlarmZone.Outputs, 'absolute', AlarmZone.VolumeRange[0])
     await control(AlarmZone.Id, 'play')
