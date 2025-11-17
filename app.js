@@ -9,6 +9,8 @@ async function start_alarm() {
             .then(() => console.debug(`increase volume fired ${i}`))
         await Promise.all([increase_volume, min_time_between_steps])
     }
+
+    // for testing, just mute and pause
     if (!IS_PROD) {
         await change_volume(AlarmZone.Outputs, 'absolute', 0)
         await control(AlarmZone.Id, 'stop')
