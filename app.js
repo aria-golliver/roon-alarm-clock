@@ -1,6 +1,6 @@
 async function start_alarm() {
     if (IS_PROD) {
-        let random_delay = Math.random() * 20 * 60 // up to 20 minutes
+        let random_delay = Math.random() * 0 * 60
         console.log(`delaying ${random_delay} seconds before starting alarm`)
         await timer(random_delay)
     }
